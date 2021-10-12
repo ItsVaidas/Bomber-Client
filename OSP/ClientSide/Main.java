@@ -1,6 +1,6 @@
 package OSP.ClientSide;
 
-import OSP.ClientSide.Screen.Window;
+import OSP.ClientSide.Screen.BomberFrame;
 import OSP.ClientSide.SendMessage.SendMessageWithTCP;
 
 public class Main {
@@ -10,7 +10,7 @@ public class Main {
 	public static void main(String[] args) {
 		setupMessenger();
 		
-		new Window(messenger);
+		new BomberFrame("Bomber", messenger);
 	}
 
 	private static void setupMessenger() {

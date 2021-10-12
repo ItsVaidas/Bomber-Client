@@ -45,7 +45,7 @@ public class SendMessageWithTCP {
 	    	        in.close();
 	    	        out.close();
 	    	        clientSocket.close();
-	        		return new String[] {null, "Server is offline or lobby is full"};
+	        		return new String[] {null};
 	        	}
 	        	ID = Integer.parseInt(response);
 	    		System.out.println("Serverio sugeneruotas ID: " + ID);
