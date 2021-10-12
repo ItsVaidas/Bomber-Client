@@ -15,7 +15,7 @@ public class Main {
 
 	private static void setupMessenger() {
 		messenger = new SendMessageWithTCP();
-		messenger.setup("94.244.101.113", 11111);
-		//messenger.setup("127.0.0.1", 11111);
+		//messenger.setup("94.244.101.113", 11111);
+		messenger.setup("127.0.0.1", 11111);
 	}
 }

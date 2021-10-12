@@ -51,7 +51,8 @@ public class WaitScreen extends JComponent {
     				currentPlayerAmount = response[2];
     				update();
     			}
-    			if (response[0].equals("2")) {
+    			if (response[0].equals("2") && prevStatus != 2) {
+    				prevStatus = 2;
     				startGame();
     				timer.stop();
     			}
@@ -61,7 +62,7 @@ public class WaitScreen extends JComponent {
 	}
 
 	protected void startGame() {
-		this.frame.add(new GameScreen(this.frame, this.ID, this.messenger), 0);
+		this.frame.add(new GameScreen(this.frame, this.ID, this.messenger));
 		update();
 		this.frame.remove(this);
 	}

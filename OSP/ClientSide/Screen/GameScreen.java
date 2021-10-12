@@ -39,15 +39,42 @@ public class GameScreen extends JComponent implements KeyListener {
 		this.frame.addKeyListener(this);
 		this.getResponseFromServer();
 		
+		updatePlayerPositions();
 		checkForBombExplosion();
 	}
 
+	private void updatePlayerPositions() {
+		 new Timer(50, (e) -> {
+			 boolean updateFrame = false;
+			 String[] response = messenger.sendMessage(10);
+			 for (String line : response[0].split("-")) {
+				String[] w = line.split(" ");
+				String[] l = w[1].split("/");
+				for (Player p : this.players)
+					if (p.getID().equals(w[0]))
+						if (w[2].equals("true"))
+							p.died();
+						else {
+							Location location = p.getLocation();
+							int playerX = location.X();
+							int playerY = location.Y();
+							int x = Integer.valueOf(l[0]);
+							int y = Integer.valueOf(l[1]);
+							if (playerX != x || playerY != y) {
+								p.getLocation().relocate(x, y);
+								updateFrame = true;
+							}
+						}
+				if (updateFrame)
+					update();
+			}
+		 }).start();
+	}
+
 	private void getResponseFromServer() {
-		String[] response = messenger.sendMessage(2);
-		response = new String[] {"2",
-				"2222222222200111100220111111022111001112211111111221111001122111111112201111110220011110022222222222",
-				"6785 1/1-6988 1/8-7777 8/1-"+this.ID+" 8/8"};
-		if (response[0] != "2") {
+		String[] response = messenger.sendMessage(3);
+		System.out.println(response[0] + " " + response[1] + " " + response[2]);
+		if (!response[0].equals("3")) {
 			frame.add(new WaitScreen(frame, ID, messenger));
 			frame.remove(this);
 			return;
@@ -75,6 +102,7 @@ public class GameScreen extends JComponent implements KeyListener {
 
 	@Override
     protected void paintComponent(Graphics g) {
+		if (this.map == null) return;
     	super.paintComponent(g);
     	final Graphics2D g2d = (Graphics2D) g;
     	
@@ -100,7 +128,8 @@ public class GameScreen extends JComponent implements KeyListener {
     	
     	//Paint players in their position
     	for (Player p : this.players) {
-    		paintPlayer(p, g2d);
+    		if (!p.isDead())
+    			paintPlayer(p, g2d);
     	}
     }
 	
@@ -149,7 +178,6 @@ public class GameScreen extends JComponent implements KeyListener {
     }
     
     private void update() {
-		frame.validate();
 		frame.repaint();
     }
 
@@ -159,24 +187,33 @@ public class GameScreen extends JComponent implements KeyListener {
 		if (p == null) return;
 		switch (e.getKeyChar()) {
 			case 'w':
-				if (p.moveUp(this.map, this.bombs))
+				if (p.moveUp(this.map, this.bombs)) {
 					update();
+					messenger.sendMessage(11, p.getLocation().X()+"", p.getLocation().Y()+"");
+				}
 				break;
 			case 'a':
-				if (p.moveLeft(this.map, this.bombs))
+				if (p.moveLeft(this.map, this.bombs)) {
 					update();
+					messenger.sendMessage(11, p.getLocation().X()+"", p.getLocation().Y()+"");
+				}
 				break;
 			case 's':
-				if (p.moveDown(this.map, this.bombs))
+				if (p.moveDown(this.map, this.bombs)) {
 					update();
+					messenger.sendMessage(11, p.getLocation().X()+"", p.getLocation().Y()+"");
+				}
 				break;
 			case 'd':
-				if (p.moveRight(this.map, this.bombs))
+				if (p.moveRight(this.map, this.bombs)) {
 					update();
+					messenger.sendMessage(11, p.getLocation().X()+"", p.getLocation().Y()+"");
+				}
 				break;
 			case ' ':
-				if (p.placeBomb(this.bombs))
+				if (p.placeBomb(this.bombs)) {
 					update();
+				}
 				break;
 		}
 	}

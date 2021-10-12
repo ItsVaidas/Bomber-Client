@@ -26,10 +26,8 @@ public class Bomb {
 	}
 
 	public void explode(GameScreen frame, List<Player> players, String map) {
-		int x = l.X();
-		int y = l.Y();
-		frame.add(new Explosion(frame, x, y, p));
-		
-		//Handle explosion, kill players, remove wall, spawn other stuff, etc
+		int currentX = l.X();
+		int currentY = l.Y();
+		frame.add(new Explosion(frame, currentX, currentY, p));
 	}
 }

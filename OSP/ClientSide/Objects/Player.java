@@ -25,6 +25,10 @@ public class Player {
 	public boolean isDead() {
 		return isDead;
 	}
+	
+	public void died() {
+		isDead = true;
+	}
 
 	public boolean moveUp(String map, List<Bomb> bombs) {
 		int y = this.l.Y();

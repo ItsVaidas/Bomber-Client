@@ -69,6 +69,15 @@ public class SendMessageWithTCP {
 	        		return new String[] {"1", timeLeft, playerAmount};
 	        	}
 	        }
+	        if (channel == 3) {
+	        	int status = Integer.parseInt(response);
+        		String map = in.readLine();
+        		String players = in.readLine();
+    	        in.close();
+    	        out.close();
+    	        clientSocket.close();
+        		return new String[] {String.valueOf(status), map, players};
+	        }
 
 	        in.close();
 	        out.close();

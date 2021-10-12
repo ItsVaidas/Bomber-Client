@@ -23,7 +23,6 @@ public class Explosion extends JComponent {
 		
 		Timer t = new Timer(1000, (e) -> {
 			frame.remove(this);
-			frame.validate();
 			frame.repaint();
 		});
 		t.setRepeats(false);
