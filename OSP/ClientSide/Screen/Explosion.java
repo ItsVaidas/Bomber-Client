@@ -36,15 +36,16 @@ public class Explosion extends JComponent {
     	final Graphics2D g2d = (Graphics2D) g;
 		g2d.setColor(Color.BLUE);
 		
-    	for (int i = y - 3; i <= y + 3; i++) {
+		int from = 3;
+		int to = 3;
+		
+    	for (int i = y - from; i <= y + to; i++) {
     		int[] xy = getPosInGrid(i, x);
     		g2d.fillRect(xy[1] + 4, xy[0] + 4, 48, 48);
-    		System.out.println((xy[1] + 4) + " " + (xy[0] + 4));
     	}
-		for (int j = x - 3; j <= x + 3; j++) {
+		for (int j = x - from; j <= x + to; j++) {
     		int[] xy = getPosInGrid(y, j);
     		g2d.fillRect(xy[1] + 4, xy[0] + 4, 48, 48);
-    		System.out.println((xy[1] + 4) + " " + (xy[0] + 4));
 		}
 		
 	}

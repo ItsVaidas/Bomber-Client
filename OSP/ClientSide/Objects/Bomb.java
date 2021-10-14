@@ -17,6 +17,12 @@ public class Bomb {
 		explodeIn = System.currentTimeMillis() + 1000 * 4;
 	}
 	
+	public Bomb(Player p, Location l, Long explodeIn) {
+		this.p = p;
+		this.l = l;
+		this.explodeIn = explodeIn;
+	}
+
 	public Location getLocation() {
 		return this.l;
 	}
