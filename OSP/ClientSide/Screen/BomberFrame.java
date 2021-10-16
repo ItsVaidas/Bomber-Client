@@ -10,7 +10,7 @@ public class BomberFrame extends JFrame {
 	
 	SendMessageWithTCP messenger;
 	String ID;
-	final String backgroundImage = "/background.jpg";
+	final String backgroundImage = "/img/background.jpg";
 
 	public BomberFrame(String title, SendMessageWithTCP messenger) {
 		super(title);

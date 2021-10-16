@@ -56,7 +56,7 @@ public class GameScreen extends JComponent implements KeyListener {
 	private void checkForEnd() {
 		checkForEnd = new Timer(50, (e) -> {
 			 String[] response = messenger.sendMessage(20);
-			 if (response[0].equals("false")) {
+			 if (response[0] != null && response[0].equals("false")) {
 				 END();
 			 }
 		 });
@@ -221,13 +221,13 @@ public class GameScreen extends JComponent implements KeyListener {
 		BufferedImage img = null;
 		switch (c) {
 			case '0':
-				img = ImageIO.read(this.getClass().getResource("/grass.png"));
+				img = ImageIO.read(this.getClass().getResource("/img/grass.png"));
 				break;
 			case '1':
-				img = ImageIO.read(this.getClass().getResource("/destructableWall.png"));
+				img = ImageIO.read(this.getClass().getResource("/img/destructableWall.png"));
 				break;
 			case '2':
-				img = ImageIO.read(this.getClass().getResource("/indistructableWall.png"));
+				img = ImageIO.read(this.getClass().getResource("/img/indistructableWall.png"));
 				break;
 				
 		}
@@ -248,7 +248,7 @@ public class GameScreen extends JComponent implements KeyListener {
     }
     
     private void paintBomb(Bomb b, Graphics g2d) throws IOException {
-    	BufferedImage img = ImageIO.read(this.getClass().getResource("/bomb.png"));
+    	BufferedImage img = ImageIO.read(this.getClass().getResource("/img/bomb.png"));
     	Location l = b.getLocation();
     	int x = l.X();
     	int y = l.Y();
