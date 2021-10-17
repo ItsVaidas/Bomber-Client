@@ -13,8 +13,11 @@ import javax.swing.JComponent;
 import javax.swing.Timer;
 
 import OSP.ClientSide.Objects.Bomb;
+import OSP.ClientSide.Objects.Creator;
 import OSP.ClientSide.Objects.Location;
 import OSP.ClientSide.Objects.Player;
+import OSP.ClientSide.Objects.WallObject;
+import OSP.ClientSide.Objects.WallCreator;
 import OSP.ClientSide.SendMessage.SendMessageWithTCP;
 
 @SuppressWarnings("serial")
@@ -30,6 +33,7 @@ public class GameScreen extends JComponent implements KeyListener {
 	String map;
 	List<Player> players;
 	List<Bomb> bombs;
+	Creator wallCreator = new WallCreator();
 	
 	/* Timers to end */
 	Timer updatePlayerPosition;
@@ -218,20 +222,8 @@ public class GameScreen extends JComponent implements KeyListener {
 	}
 	
 	private void paintWall(char c, Graphics2D g2d, int x, int y) throws IOException {
-		BufferedImage img = null;
-		switch (c) {
-			case '0':
-				img = ImageIO.read(this.getClass().getResource("/img/grass.png"));
-				break;
-			case '1':
-				img = ImageIO.read(this.getClass().getResource("/img/destructableWall.png"));
-				break;
-			case '2':
-				img = ImageIO.read(this.getClass().getResource("/img/indistructableWall.png"));
-				break;
-				
-		}
-		g2d.drawImage(img, x, y, this);
+		WallObject wall = wallCreator.wallPaintFactory(c);
+		g2d.drawImage(wall.img, x, y, this);
 	}
 	
     private void paintPlayer(Player player, Graphics g2d) {
