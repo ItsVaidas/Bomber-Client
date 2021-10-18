@@ -1,18 +1,22 @@
 package OSP.ClientSide.Objects;
 
 import java.util.List;
+import java.awt.*;
 
-public class Player {
+public abstract class Player {
 
 	Location l;
 	String ID;
 	boolean isDead;
-	
 	public Player(String ID, Location l) {
 		this.ID = ID;
 		this.l = l;
 		this.isDead = false;
+	
 	}
+	
+	public abstract PlayersAbstractFactory getPlayerFactory();
+	public abstract Color getPlayerColour();
 	
 	public Location getLocation() {
 		return this.l;
