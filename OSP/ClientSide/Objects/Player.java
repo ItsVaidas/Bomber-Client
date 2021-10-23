@@ -1,6 +1,9 @@
 package OSP.ClientSide.Objects;
 
 import java.util.List;
+
+import OSP.ClientSide.Objects.PlayerVisual.Red;
+
 import java.awt.*;
 
 public abstract class Player {
@@ -8,22 +11,26 @@ public abstract class Player {
 	Location l;
 	String ID;
 	boolean isDead;
-	public Player(String ID, Location l) {
+	ObjectColor color;
+	public Player(String ID, Location l, ObjectColor c) {
 		this.ID = ID;
 		this.l = l;
 		this.isDead = false;
+		this.color = c;
 	
 	}
-	
-	public abstract PlayersAbstractFactory getPlayerFactory();
-	public abstract Color getPlayerColour();
-	
+
+
 	public Location getLocation() {
 		return this.l;
 	}
 	
 	public String getID() {
 		return this.ID;
+	}
+	
+	public ObjectColor getObjectColor() {
+		return this.color;
 	}
 
 	public boolean isDead() {
@@ -33,6 +40,7 @@ public abstract class Player {
 	public void died() {
 		isDead = true;
 	}
+	
 
 	public boolean moveUp(String map, List<Bomb> bombs) {
 		int y = this.l.Y();

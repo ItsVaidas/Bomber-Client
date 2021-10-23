@@ -37,8 +37,8 @@ public class Explosion extends JComponent {
     	final Graphics2D g2d = (Graphics2D) g;
 		g2d.setColor(Color.BLUE);
 		
-		int from = p.getPlayerFactory().getBombStrength();
-		int to = p.getPlayerFactory().getBombStrength();
+		int from = p.getObjectColor().getColorFactory().getBombStrength();
+		int to = p.getObjectColor().getColorFactory().getBombStrength();
 		
     	for (int i = y - from; i <= y + to; i++) {
     		int[] xy = getPosInGrid(i, x);

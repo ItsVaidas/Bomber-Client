@@ -14,11 +14,12 @@ import javax.swing.Timer;
 
 import OSP.ClientSide.Enum.Colors;
 import OSP.ClientSide.Objects.Bomb;
-import OSP.ClientSide.Objects.DefaultPlayerCreator;
+import OSP.ClientSide.Objects.DefaultColorCreator;
 import OSP.ClientSide.Objects.WallCreator;
 import OSP.ClientSide.Objects.Location;
+import OSP.ClientSide.Objects.ObjectColor;
 import OSP.ClientSide.Objects.Player;
-import OSP.ClientSide.Objects.PlayerCreator;
+import OSP.ClientSide.Objects.ColorCreator;
 import OSP.ClientSide.Objects.WallObject;
 import OSP.ClientSide.Objects.DefaultWallCreator;
 import OSP.ClientSide.SendMessage.SendMessageWithTCP;
@@ -39,7 +40,8 @@ public class GameScreen extends JComponent implements KeyListener {
 	List<Player> players;
 	List<Bomb> bombs;
 	WallCreator wallCreator = new DefaultWallCreator();
-	PlayerCreator playerCreator = new DefaultPlayerCreator();
+	ColorCreator colorCreator = new DefaultColorCreator();
+	
 	
 	/* Timers to end */
 	Timer updatePlayerPosition;
@@ -108,8 +110,7 @@ public class GameScreen extends JComponent implements KeyListener {
 					for (Player player : this.players)
 						if (player.getID().equals(w[2]))
 							p = player;
-					
-					this.bombs.add(p.getPlayerFactory().bombCreation(p, new Location(x, y), Long.valueOf(w[1])));
+					this.bombs.add(p.getObjectColor().getColorFactory().bombCreation(p, new Location(x, y), Long.valueOf(w[1])));
 					updateFrame = true;
 				}
 				if (updateFrame)
@@ -187,14 +188,17 @@ public class GameScreen extends JComponent implements KeyListener {
 		for (String line : response[2].split("-")) {
 			String[] w = line.split(" ");
 			String[] l = w[1].split("/");
+			ObjectColor objectColor;
 			if(tempCounterForPlayer==0) {
-				this.players.add(playerCreator.playerCretion(w[0], new Location(Integer.valueOf(l[0]), Integer.valueOf(l[1])), Colors.YELLOW));			
+				objectColor = colorCreator.colorCretion(Colors.YELLOW);
 				tempCounterForPlayer++;
 			}
 			else
 			{
-				this.players.add(playerCreator.playerCretion(w[0], new Location(Integer.valueOf(l[0]), Integer.valueOf(l[1])), Colors.RED));
+				objectColor = colorCreator.colorCretion(Colors.RED);
 			}
+			
+			this.players.add(objectColor.getColorFactory().playerCreation(w[0], new Location(Integer.valueOf(l[0]), Integer.valueOf(l[1]))));	
 		}
 	}
 
@@ -244,7 +248,7 @@ public class GameScreen extends JComponent implements KeyListener {
 		Location l = player.getLocation();
 		int[] xy = getPosInGrid(l.Y(), l.X());
     	
-		g2d.setColor(player.getPlayerColour());
+		g2d.setColor(player.getObjectColor().getColor());
 		g2d.fillRect(xy[1] + 17, xy[0] + 17, 30, 30);
 		if (player.getID().equals(this.ID)) {
 			g2d.setColor(Color.BLACK);
