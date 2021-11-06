@@ -18,11 +18,15 @@ import OSP.ClientSide.Objects.DefaultColorCreator;
 import OSP.ClientSide.Objects.WallCreator;
 import OSP.ClientSide.Objects.Location;
 import OSP.ClientSide.Objects.ObjectColor;
+import OSP.ClientSide.Objects.PlaceBombCommand;
 import OSP.ClientSide.Objects.Player;
 import OSP.ClientSide.Objects.ColorCreator;
 import OSP.ClientSide.Objects.WallObject;
 import OSP.ClientSide.Objects.DefaultWallCreator;
+import OSP.ClientSide.Objects.Invoker;
 import OSP.ClientSide.SendMessage.SendMessageWithTCP;
+import OSP.ClientSide.Objects.PlaceBombCommand; 
+import OSP.ClientSide.Objects.explodeCommand;
 
 @SuppressWarnings("serial")
 public class GameScreen extends JComponent implements KeyListener {
@@ -39,6 +43,8 @@ public class GameScreen extends JComponent implements KeyListener {
 	String map;
 	List<Player> players;
 	List<Bomb> bombs;
+    Invoker invoker = new Invoker();
+
 	WallCreator wallCreator = new DefaultWallCreator();
 	ColorCreator colorCreator = new DefaultColorCreator();
 	
@@ -166,7 +172,8 @@ public class GameScreen extends JComponent implements KeyListener {
 		checkForBombs = new Timer(50, (e) -> {
 			for (Bomb b : new ArrayList<>(bombs)) {
 				if (b.isExploded()) {
-					b.explode(this, players, map);
+				    invoker.run(new explodeCommand(b), bombs, this, players, map);
+					//b.explode(this, players, map);
 					bombs.remove(b);
 				}
 			}
@@ -302,9 +309,15 @@ public class GameScreen extends JComponent implements KeyListener {
 				}
 				break;
 			case ' ':
-				if (p.placeBomb(this.bombs)) {
+				if (invoker.run(new PlaceBombCommand(p), bombs)) {
 					update();
 					messenger.sendMessage(13, p.getLocation().X()+"", p.getLocation().Y()+"");
+				}
+				break;
+			case 'r':
+				if (invoker.undo(bombs)) {
+					update();
+				    messenger.sendMessage(70, p.getLocation().X()+"", p.getLocation().Y()+"");
 				}
 				break;
 		}

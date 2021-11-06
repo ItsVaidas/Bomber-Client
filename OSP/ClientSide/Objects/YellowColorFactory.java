@@ -1,7 +1,9 @@
 package OSP.ClientSide.Objects;
 
 import OSP.ClientSide.Objects.PlayerVisual.YellowBomb;
-import OSP.ClientSide.Objects.PlayerVisual.YellowPlayer;
+//import OSP.ClientSide.Objects.PlayerVisual.YellowPlayer;   --- nera tokio?? 
+import OSP.ClientSide.Objects.Player;
+import OSP.ClientSide.Objects.PlayerVisual.Yellow;
 
 public class YellowColorFactory extends ColorsAbstractFactory {
 	
@@ -15,7 +17,8 @@ public class YellowColorFactory extends ColorsAbstractFactory {
 	@Override
 	public Player playerCreation(String ID, Location l)
 	{
-		return new YellowPlayer(ID, l);
+		Yellow y = new Yellow();
+		return new Player(ID, l, y);   //yellowPlayer
 	}
 	
 	@Override

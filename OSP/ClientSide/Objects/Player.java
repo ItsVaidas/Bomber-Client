@@ -6,7 +6,7 @@ import OSP.ClientSide.Objects.PlayerVisual.Red;
 
 import java.awt.*;
 
-public abstract class Player {
+public class Player {
 
 	Location l;
 	String ID;
@@ -96,6 +96,16 @@ public abstract class Player {
 		return false;
 	}
 
+	public boolean removeBomb(List<Bomb> bombs) {
+		int y = this.l.Y();
+		int x = this.l.X();
+		if (isThereABomb(x,y, bombs)) {
+				bombs.clear();
+				return true;
+		}
+		return false;
+	}
+	
 	private boolean isThereABomb(int x, int y, List<Bomb> bombs) {
 		for (Bomb b : bombs) {
 			Location l = b.getLocation();
