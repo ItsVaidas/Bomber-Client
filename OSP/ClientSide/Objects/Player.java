@@ -12,12 +12,13 @@ public class Player {
 	String ID;
 	boolean isDead;
 	ObjectColor color;
+	int health = 2;
+	
 	public Player(String ID, Location l, ObjectColor c) {
 		this.ID = ID;
 		this.l = l;
 		this.isDead = false;
 		this.color = c;
-	
 	}
 
 
@@ -39,6 +40,10 @@ public class Player {
 	
 	public void died() {
 		isDead = true;
+	}
+	
+	public void setHealth(int newHealth) {
+		this.health = newHealth;
 	}
 	
 

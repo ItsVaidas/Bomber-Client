@@ -13,6 +13,9 @@
 /WallCreator.class
 /WallObject.class
 /YellowColorFactory.class
+/PowerUp.class
+/PowerUpAlgorithm.class
+/Fruit.class
 /ICommand.class
 /Invoker.class
 /PlaceBombCommand.class
