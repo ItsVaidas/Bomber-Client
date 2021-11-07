@@ -13,15 +13,7 @@ import javax.swing.JComponent;
 import javax.swing.Timer;
 
 import OSP.ClientSide.Enum.Colors;
-import OSP.ClientSide.Objects.Bomb;
-import OSP.ClientSide.Objects.DefaultColorCreator;
-import OSP.ClientSide.Objects.WallCreator;
-import OSP.ClientSide.Objects.Location;
-import OSP.ClientSide.Objects.ObjectColor;
-import OSP.ClientSide.Objects.Player;
-import OSP.ClientSide.Objects.ColorCreator;
-import OSP.ClientSide.Objects.WallObject;
-import OSP.ClientSide.Objects.DefaultWallCreator;
+import OSP.ClientSide.Objects.*;
 import OSP.ClientSide.SendMessage.SendMessageWithTCP;
 
 @SuppressWarnings("serial")
@@ -39,6 +31,7 @@ public class GameScreen extends JComponent implements KeyListener {
 	String map;
 	List<Player> players;
 	List<Bomb> bombs;
+	List<PowerUp> powerUps;
 	WallCreator wallCreator = new DefaultWallCreator();
 	ColorCreator colorCreator = new DefaultColorCreator();
 	
@@ -59,6 +52,7 @@ public class GameScreen extends JComponent implements KeyListener {
 		this.getResponseFromServer();
 		
 		updatePlayerPositions();
+		updatePowerUps();
 		updateBombs();
 		updateMap();
 		checkForEnd();
@@ -118,6 +112,19 @@ public class GameScreen extends JComponent implements KeyListener {
 			}
 		 });
 		updateBombs.start();
+	}
+	
+	private void updatePowerUps() {
+		new Timer(300, (e) -> {
+			String[] response = messenger.sendMessage(15);
+			String powerUpsPositions = response[0];
+			if(powerUpsPositions != null) {
+				this.powerUps = parsePowerUps(powerUpsPositions);
+			} else {
+				this.powerUps = new ArrayList<>();
+			}
+			update();	
+		}).start();
 	}
 
 	private void updateMap() {
@@ -185,6 +192,8 @@ public class GameScreen extends JComponent implements KeyListener {
 		 
 		this.players = new ArrayList<>();
 		this.bombs = new ArrayList<>();
+		this.powerUps = new ArrayList<>();
+		
 		for (String line : response[2].split("-")) {
 			String[] w = line.split(" ");
 			String[] l = w[1].split("/");
@@ -200,6 +209,19 @@ public class GameScreen extends JComponent implements KeyListener {
 			
 			this.players.add(objectColor.getColorFactory().playerCreation(w[0], new Location(Integer.valueOf(l[0]), Integer.valueOf(l[1]))));	
 		}
+		
+		this.powerUps = parsePowerUps(response[3]);
+	}
+	
+	private List<PowerUp> parsePowerUps(String response) {
+		List<PowerUp> powerUps = new ArrayList<>();
+		for(String line : response.split("-")) {
+			String[] l = line.split("/");
+			Fruit fruit = new Fruit(new Location(Integer.valueOf(l[0]), Integer.valueOf(l[1])));
+			powerUps.add(fruit);
+		}
+		
+		return powerUps;
 	}
 
 	@Override
@@ -233,6 +255,15 @@ public class GameScreen extends JComponent implements KeyListener {
     		if (!p.isDead())
     			paintPlayer(p, g2d);
     	}
+    	
+    	//Paint powerUps in their position
+    	for (PowerUp powerUp : this.powerUps) {
+			try {
+				paintPowerUp(powerUp, g2d);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	}
     }
 	
 	private int[] getPosInGrid(int i, int j) {
@@ -260,6 +291,17 @@ public class GameScreen extends JComponent implements KeyListener {
     private void paintBomb(Bomb b, Graphics g2d) throws IOException {
     	BufferedImage img = ImageIO.read(this.getClass().getResource("/img/bomb.png"));
     	Location l = b.getLocation();
+    	int x = l.X();
+    	int y = l.Y();
+
+		int[] xy = getPosInGrid(y, x);
+		
+		g2d.drawImage(img, xy[1]+9, xy[0]+7, this);
+    }
+    
+    private void paintPowerUp(PowerUp powerUp, Graphics g2d) throws IOException {
+    	BufferedImage img = ImageIO.read(this.getClass().getResource("/img/apple.png"));
+    	Location l = powerUp.getLocation();
     	int x = l.X();
     	int y = l.Y();
 

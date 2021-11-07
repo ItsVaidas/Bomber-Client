@@ -73,10 +73,11 @@ public class SendMessageWithTCP {
 	        	int status = Integer.parseInt(response);
         		String map = in.readLine();
         		String players = in.readLine();
+        		String powerUps = in.readLine();
     	        in.close();
     	        out.close();
     	        clientSocket.close();
-        		return new String[] {String.valueOf(status), map, players};
+        		return new String[] {String.valueOf(status), map, players, powerUps};
 	        }
 
 	        in.close();
