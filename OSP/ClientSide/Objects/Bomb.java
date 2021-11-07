@@ -5,7 +5,7 @@ import java.util.List;
 import OSP.ClientSide.Screen.Explosion;
 import OSP.ClientSide.Screen.GameScreen;
 
-public class Bomb {
+public class Bomb implements Cloneable{
 	
 	Player p;
 	Location l;
@@ -35,5 +35,14 @@ public class Bomb {
 		int currentX = l.X();
 		int currentY = l.Y();
 		frame.add(new Explosion(frame, currentX, currentY, p));
+	}
+	
+	public Bomb makeCopy() {
+		try {
+			return (Bomb) this.clone();
+		}catch(CloneNotSupportedException ex){
+		ex.printStackTrace();
+		return this;
+	    }
 	}
 }

@@ -3,6 +3,7 @@ package OSP.ClientSide.Objects;
 import OSP.ClientSide.Objects.PlayerVisual.YellowBomb;
 import OSP.ClientSide.Objects.PlayerVisual.YellowPlayer;
 
+
 public class YellowColorFactory extends ColorsAbstractFactory {
 	
 	int bombStrength = 4;

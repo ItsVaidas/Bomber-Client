@@ -1,7 +1,8 @@
 package OSP.ClientSide.Objects;
 
 import OSP.ClientSide.Objects.PlayerVisual.RedBomb;
-import OSP.ClientSide.Objects.PlayerVisual.RedPlayer;
+import OSP.ClientSide.Objects.PlayerVisual.RedPlayer; 
+
 
 public class RedColorFactory extends ColorsAbstractFactory{
 

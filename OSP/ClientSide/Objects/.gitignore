@@ -16,3 +16,7 @@
 /PowerUp.class
 /PowerUpAlgorithm.class
 /Fruit.class
+/ICommand.class
+/Invoker.class
+/PlaceBombCommand.class
+/explodeCommand.class
