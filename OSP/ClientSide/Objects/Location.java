@@ -1,6 +1,7 @@
 package OSP.ClientSide.Objects;
 
-public class Location {
+
+public class Location implements Cloneable{
 	
 	private int x;
 	private int y;
@@ -21,5 +22,14 @@ public class Location {
 	public void relocate(int x, int y) {
 		this.x = x;
 		this.y = y;
+	}
+	
+	public Location makeCopy() {
+		try {
+            return (Location) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            return this;
+        }
 	}
 }

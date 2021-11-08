@@ -6,7 +6,7 @@ import OSP.ClientSide.Objects.PlayerVisual.Red;
 
 import java.awt.*;
 
-public class Player {
+public class Player implements Cloneable{
 
 	Location l;
 	String ID;
@@ -45,7 +45,14 @@ public class Player {
 	public void setHealth(int newHealth) {
 		this.health = newHealth;
 	}
-	
+	public Player makeCopy() {
+		try {
+			return (Player) super.clone();
+		}catch(CloneNotSupportedException ex){
+		ex.printStackTrace();
+		return this;
+	    }
+	}
 
 	public boolean moveUp(String map, List<Bomb> bombs) {
 		int y = this.l.Y();

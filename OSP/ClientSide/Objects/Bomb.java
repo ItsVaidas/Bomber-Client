@@ -26,7 +26,12 @@ public class Bomb implements Cloneable{
 	public Location getLocation() {
 		return this.l;
 	}
-	
+	public void setLocation(Location ll) {
+		this.l = ll;
+	}
+	public void setPlayer(Player pp) {
+		this.p = pp;
+	}
 	public boolean isExploded() {
 		return explodeIn < System.currentTimeMillis();
 	}
@@ -37,9 +42,20 @@ public class Bomb implements Cloneable{
 		frame.add(new Explosion(frame, currentX, currentY, p));
 	}
 	
-	public Bomb makeCopy() {
+	public Bomb makeCopyShallow() {
 		try {
 			return (Bomb) this.clone();
+		}catch(CloneNotSupportedException ex){
+		ex.printStackTrace();
+		return this;
+	    }
+	}
+	public Bomb makeCopyDeep() {
+		try {
+			Bomb copyBomb =  (Bomb) this.clone();
+			copyBomb.setLocation(this.l.makeCopy());
+			copyBomb.setPlayer(this.p.makeCopy());
+			return copyBomb;
 		}catch(CloneNotSupportedException ex){
 		ex.printStackTrace();
 		return this;
