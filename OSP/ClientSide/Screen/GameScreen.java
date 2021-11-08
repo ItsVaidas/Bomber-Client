@@ -221,9 +221,11 @@ public class GameScreen extends JComponent implements KeyListener {
 	private List<PowerUp> parsePowerUps(String response) {
 		List<PowerUp> powerUps = new ArrayList<>();
 		for(String line : response.split("-")) {
-			String[] l = line.split("/");
-			Fruit fruit = new Fruit(new Location(Integer.valueOf(l[0]), Integer.valueOf(l[1])));
-			powerUps.add(fruit);
+			String[] w = line.split(" ");
+			String[] l = w[0].split("/");
+			int type = Integer.valueOf(w[1]);
+			PowerUp powerUp = new PowerUp(new Location(Integer.valueOf(l[0]), Integer.valueOf(l[1])), type);
+			powerUps.add(powerUp);
 		}
 
 		return powerUps;
@@ -307,6 +309,16 @@ public class GameScreen extends JComponent implements KeyListener {
     private void paintPowerUp(PowerUp powerUp, Graphics g2d) throws IOException {
     	BufferedImage img = ImageIO.read(this.getClass().getResource("/img/apple.png"));
     	Location l = powerUp.getLocation();
+    	int type = powerUp.getType();
+    	
+    	if(type == 2) {
+    		img = ImageIO.read(this.getClass().getResource("/img/speed-poition.png"));
+    	} else if(type == 3) {
+    		img = ImageIO.read(this.getClass().getResource("/img/mushroom.png"));
+    	} else if(type == 4) {
+    		img = ImageIO.read(this.getClass().getResource("/img/damage.png"));
+    	}
+    	
     	int x = l.X();
     	int y = l.Y();
 
