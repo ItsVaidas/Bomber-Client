@@ -24,6 +24,4 @@ public class RedColorFactory extends ColorsAbstractFactory{
 		 return bombStrength;
 	 }
 
-		
-
 }
