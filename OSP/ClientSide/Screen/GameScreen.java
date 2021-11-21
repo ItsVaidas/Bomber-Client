@@ -14,9 +14,9 @@ import javax.swing.Timer;
 
 import OSP.ClientSide.Enum.Colors;
 import OSP.ClientSide.Objects.*;
+import OSP.ClientSide.Objects.PlayerVisual.Red;
+import OSP.ClientSide.Objects.PlayerVisual.Yellow;
 import OSP.ClientSide.SendMessage.SendMessageWithTCP;
-import OSP.ClientSide.Objects.PlaceBombCommand;
-import OSP.ClientSide.Objects.explodeCommand;
 
 @SuppressWarnings("serial")
 public class GameScreen extends JComponent implements KeyListener {
@@ -26,18 +26,7 @@ public class GameScreen extends JComponent implements KeyListener {
 	BomberFrame frame;
 	SendMessageWithTCP messenger;
 	String ID;
-	final int GRID_HEIGHT = 10;
-	final int GRID_WIDTH = 10;
-	
-	/* Generated from a response from server */
-	String map;
-	List<Player> players;
-	List<Bomb> bombs;
-    Invoker invoker = new Invoker();
 
-	List<PowerUp> powerUps;
-	WallCreator wallCreator = new DefaultWallCreator();
-	ColorCreator colorCreator = new DefaultColorCreator();
 	
 	
 	/* Timers to end */
@@ -100,15 +89,15 @@ public class GameScreen extends JComponent implements KeyListener {
 				int x = Integer.valueOf(l[0]);
 				int y = Integer.valueOf(l[1]);
 				boolean exist = false;
-				for (Bomb b : this.bombs)
+				for (Bomb b : GameScreenVariables.bombs)
 					if (b.getLocation().X() == x && b.getLocation().Y() == y)
 						exist = true;
 				if (!exist) {
 					Player p = null;
-					for (Player player : this.players)
+					for (Player player : GameScreenVariables.players)
 						if (player.getID().equals(w[2]))
 							p = player;
-					this.bombs.add(p.getObjectColor().getColorFactory().bombCreation(p, new Location(x, y), Long.valueOf(w[1])));
+					GameScreenVariables.bombs.add(p.getObjectColor().getColorFactory().bombCreation(p, new Location(x, y), Long.valueOf(w[1])));
 					updateFrame = true;
 				}
 				if (updateFrame)
@@ -123,9 +112,9 @@ public class GameScreen extends JComponent implements KeyListener {
 			String[] response = messenger.sendMessage(15);
 			String powerUpsPositions = response[0];
 			if(powerUpsPositions != null) {
-				this.powerUps = parsePowerUps(powerUpsPositions);
+				GameScreenVariables.powerUps = parsePowerUps(powerUpsPositions);
 			} else {
-				this.powerUps = new ArrayList<>();
+				GameScreenVariables.powerUps = new ArrayList<>();
 			}
 			update();
 		}).start();
@@ -135,8 +124,8 @@ public class GameScreen extends JComponent implements KeyListener {
 		updateMap = new Timer(50, (e) -> {
 			 String[] response = messenger.sendMessage(14);
 			 if (response[0] == null || response[0].equals("null")) return;
-			 if (!this.map.equals(response[0])) {
-				 this.map = response[0];
+			 if (!GameScreenVariables.map.equals(response[0])) {
+				 GameScreenVariables.map = response[0];
 				 update();
 			 }
 		 });
@@ -151,7 +140,7 @@ public class GameScreen extends JComponent implements KeyListener {
 			 for (String line : response[0].split("-")) {
 				String[] w = line.split(" ");
 				String[] l = w[1].split("/");
-				for (Player p : this.players)
+				for (Player p : GameScreenVariables.players)
 					if (p.getID().equals(w[0]))
 						if (w[2].equals("true"))
 							p.died();
@@ -175,11 +164,11 @@ public class GameScreen extends JComponent implements KeyListener {
 
 	private void checkForBombExplosion() {
 		checkForBombs = new Timer(50, (e) -> {
-			for (Bomb b : new ArrayList<>(bombs)) {
+			for (Bomb b : new ArrayList<>(GameScreenVariables.bombs)) {
 				if (b.isExploded()) {
-				    invoker.run(new explodeCommand(b), bombs, this, players, map);
+					GameScreenVariables.invoker.run(new explodeCommand(b), GameScreenVariables.bombs, this, GameScreenVariables.players, GameScreenVariables.map);
 					//b.explode(this, players, map);
-					bombs.remove(b);
+					GameScreenVariables.bombs.remove(b);
 				}
 			}
 		 });
@@ -193,29 +182,28 @@ public class GameScreen extends JComponent implements KeyListener {
 			frame.remove(this);
 			return;
 		}
-		this.map = response[1];
+		GameScreenVariables.map = response[1];
 		 
-		this.players = new ArrayList<>();
-		this.bombs = new ArrayList<>();
-		this.powerUps = new ArrayList<>();
+		GameScreenVariables.players = new ArrayList<>();
+		GameScreenVariables.bombs = new ArrayList<>();
+		GameScreenVariables.powerUps = new ArrayList<>();
 
 		for (String line : response[2].split("-")) {
 			String[] w = line.split(" ");
 			String[] l = w[1].split("/");
-			ObjectColor objectColor;
+			GameScreenVariables.objectColor = new Red();
 			if(tempCounterForPlayer==0) {
-				objectColor = colorCreator.colorCretion(Colors.YELLOW);
+				GameScreenVariables.objectColor = new Yellow();
+				GameScreenVariables.objectColor.paintProcess(l, w);
 				tempCounterForPlayer++;
 			}
 			else
 			{
-				objectColor = colorCreator.colorCretion(Colors.RED);
-			}
-			
-			this.players.add(objectColor.getColorFactory().playerCreation(w[0], new Location(Integer.valueOf(l[0]), Integer.valueOf(l[1]))));	
+				GameScreenVariables.objectColor.paintProcess(l, w);
+			}	
 		}
 
-		this.powerUps = parsePowerUps(response[3]);
+		GameScreenVariables.powerUps = parsePowerUps(response[3]);
 	}
 
 	private List<PowerUp> parsePowerUps(String response) {
@@ -233,23 +221,23 @@ public class GameScreen extends JComponent implements KeyListener {
 
 	@Override
     protected void paintComponent(Graphics g) {
-		if (this.map == null) return;
+		if (GameScreenVariables.map == null) return;
     	super.paintComponent(g);
     	final Graphics2D g2d = (Graphics2D) g;
     	
     	//Paiting walls
-    	for (int i = 0; i < GRID_HEIGHT; i++)
-        	for (int j = 0; j < GRID_WIDTH; j++) {
+    	for (int i = 0; i < GameScreenVariables.GRID_HEIGHT; i++)
+        	for (int j = 0; j < GameScreenVariables.GRID_WIDTH; j++) {
         		int[] xy = getPosInGrid(i, j);
         		try {
-					paintWall(map.charAt(i * 10 + j), g2d, xy[1], xy[0]);
+					paintWall(GameScreenVariables.map.charAt(i * 10 + j), g2d, xy[1], xy[0]);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
         	}
     	
     	//Paint bombs
-    	for (Bomb b : this.bombs) {
+    	for (Bomb b : GameScreenVariables.bombs) {
     		try {
 				paintBomb(b, g2d);
 			} catch (IOException e) {
@@ -258,13 +246,13 @@ public class GameScreen extends JComponent implements KeyListener {
     	}
     	
     	//Paint players in their position
-    	for (Player p : this.players) {
+    	for (Player p : GameScreenVariables.players) {
     		if (!p.isDead())
     			paintPlayer(p, g2d);
     	}
 
     	//Paint powerUps in their position
-    	for (PowerUp powerUp : this.powerUps) {
+    	for (PowerUp powerUp : GameScreenVariables.powerUps) {
 			try {
 				paintPowerUp(powerUp, g2d);
 			} catch (IOException e) {
@@ -278,7 +266,7 @@ public class GameScreen extends JComponent implements KeyListener {
 	}
 	
 	private void paintWall(char c, Graphics2D g2d, int x, int y) throws IOException {
-		WallObject wall = wallCreator.wallPaintFactory(c);
+		WallObject wall = GameScreenVariables.wallCreator.wallPaintFactory(c);
 		g2d.drawImage(wall.img, x, y, this);
 	}
 	
@@ -337,37 +325,37 @@ public class GameScreen extends JComponent implements KeyListener {
 		if (p == null) return;
 		switch (e.getKeyChar()) {
 			case 'w':
-				if (p.moveUp(this.map, this.bombs)) {
+				if (p.moveUp(GameScreenVariables.map, GameScreenVariables.bombs)) {
 					update();
 					messenger.sendMessage(11, p.getLocation().X()+"", p.getLocation().Y()+"");
 				}
 				break;
 			case 'a':
-				if (p.moveLeft(this.map, this.bombs)) {
+				if (p.moveLeft(GameScreenVariables.map, GameScreenVariables.bombs)) {
 					update();
 					messenger.sendMessage(11, p.getLocation().X()+"", p.getLocation().Y()+"");
 				}
 				break;
 			case 's':
-				if (p.moveDown(this.map, this.bombs)) {
+				if (p.moveDown(GameScreenVariables.map, GameScreenVariables.bombs)) {
 					update();
 					messenger.sendMessage(11, p.getLocation().X()+"", p.getLocation().Y()+"");
 				}
 				break;
 			case 'd':
-				if (p.moveRight(this.map, this.bombs)) {
+				if (p.moveRight(GameScreenVariables.map, GameScreenVariables.bombs)) {
 					update();
 					messenger.sendMessage(11, p.getLocation().X()+"", p.getLocation().Y()+"");
 				}
 				break;
 			case ' ':
-				if (invoker.run(new PlaceBombCommand(p), bombs)) {
+				if (GameScreenVariables.invoker.run(new PlaceBombCommand(p), GameScreenVariables.bombs)) {
 					update();
 					messenger.sendMessage(13, p.getLocation().X()+"", p.getLocation().Y()+"");
 				}
 				break;
 			case 'r':
-				if (invoker.undo(bombs)) {
+				if (GameScreenVariables.invoker.undo(GameScreenVariables.bombs)) {
 					update();
 				    messenger.sendMessage(70, p.getLocation().X()+"", p.getLocation().Y()+"");
 				}
@@ -376,7 +364,7 @@ public class GameScreen extends JComponent implements KeyListener {
 	}
 
 	private Player getSelfPlayer() {
-		for (Player p : this.players)
+		for (Player p : GameScreenVariables.players)
 			if (p.getID().equals(this.ID) && !p.isDead())
 				return p;
 		return null;

@@ -19,4 +19,8 @@ public class Yellow extends ObjectColor {
 	{
 		return new Color(1f, 1f, 0f);
 	}
+	
+	public boolean isRed() {
+		return false;
+	}
 }

@@ -21,4 +21,7 @@ public class Red extends ObjectColor {
 		return new Color(1f, 0f, 0f);
 	}
 	
+	public boolean isRed() {
+		return true;
+	}
 }
