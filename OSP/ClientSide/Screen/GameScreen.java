@@ -50,6 +50,7 @@ public class GameScreen extends JComponent implements KeyListener {
 		updateMap();
 		checkForEnd();
 		checkForBombExplosion();
+		updateSelfPowerups();
 	}
 
 	private void checkForEnd() {
@@ -128,6 +129,25 @@ public class GameScreen extends JComponent implements KeyListener {
 				 GameScreenVariables.map = response[0];
 				 update();
 			 }
+		 });
+		updateMap.start();
+	}
+
+	private void updateSelfPowerups() {
+		updateMap = new Timer(50, (e) -> {
+			 String[] response = messenger.sendMessage(16);
+			 if (response[0] == null || response[0].equals("null")) return;
+			 	String[] words = response[0].split(",");
+				int health = Integer.parseInt(words[0]);
+				int power = Integer.parseInt(words[1]);
+				int speed = Integer.parseInt(words[2]);
+				int damage = Integer.parseInt(words[3]);
+				
+				Player p = getSelfPlayer();
+				p.setHealth(health);
+				p.setPower(power);
+				p.setSpeed(speed);
+				p.setDamage(damage);
 		 });
 		updateMap.start();
 	}
@@ -259,8 +279,15 @@ public class GameScreen extends JComponent implements KeyListener {
 				e.printStackTrace();
 			}
     	}
+
+    	//Paint amount of powerups player has
+		try {
+	    	paintAllPowerupsAmount(g2d);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
-	
+
 	private int[] getPosInGrid(int i, int j) {
 		return new int[] {i * 64, j * 64};
 	}
@@ -301,9 +328,9 @@ public class GameScreen extends JComponent implements KeyListener {
     	
     	if(type == 2) {
     		img = ImageIO.read(this.getClass().getResource("/img/speed-poition.png"));
-    	} else if(type == 3) {
+    	} else if (type == 3) {
     		img = ImageIO.read(this.getClass().getResource("/img/mushroom.png"));
-    	} else if(type == 4) {
+    	} else if (type == 4) {
     		img = ImageIO.read(this.getClass().getResource("/img/damage.png"));
     	}
     	
@@ -314,6 +341,28 @@ public class GameScreen extends JComponent implements KeyListener {
 		
 		g2d.drawImage(img, xy[1]+9, xy[0]+7, this);
     }
+	
+	private void paintAllPowerupsAmount(Graphics2D g2d) throws IOException {
+		Player p = getSelfPlayer();
+		int health = p.getHealth();
+		int speed = p.getSpeed();
+		int damage = p.getDamage();
+
+    	BufferedImage healthImg = ImageIO.read(this.getClass().getResource("/img/apple.png"));
+    	BufferedImage speedImg = ImageIO.read(this.getClass().getResource("/img/speed-poition.png"));
+    	BufferedImage damageImg = ImageIO.read(this.getClass().getResource("/img/damage.png"));
+		
+		g2d.drawImage(healthImg, 15, 10, this);
+		g2d.drawImage(speedImg, 79, 10, this);
+		g2d.drawImage(damageImg, 143, 10, this);
+
+		g2d.setColor(Color.WHITE);
+		g2d.setFont(new Font("TimesRoman", Font.BOLD, 25)); 
+		g2d.drawString(""+health, 30, 45);
+		g2d.drawString(""+speed, 95, 45);
+		g2d.drawString(""+damage, 153, 45);
+		
+	}
     
     private void update() {
 		frame.repaint();

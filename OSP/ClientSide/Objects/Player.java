@@ -12,7 +12,11 @@ public class Player implements Cloneable{
 	String ID;
 	boolean isDead;
 	ObjectColor color;
-	int health = 2;
+	int health = 1;
+	int power = 1;
+	int speed = 1;
+	int damage = 1;
+	int level = 1;
 	
 	public Player(String ID, Location l, ObjectColor c) {
 		this.ID = ID;
@@ -42,9 +46,6 @@ public class Player implements Cloneable{
 		isDead = true;
 	}
 	
-	public void setHealth(int newHealth) {
-		this.health = newHealth;
-	}
 	public Player makeCopy() {
 		try {
 			return (Player) super.clone();
@@ -125,6 +126,38 @@ public class Player implements Cloneable{
 				return true;
 		}
 		return false;
+	}
+	
+	public int getHealth() {
+		return this.health;
+	}
+	
+	public int getPower() {
+		return this.power;
+	}
+	
+	public int getSpeed() {
+		return this.speed;
+	}
+	
+	public int getDamage() {
+		return this.damage;
+	}
+	
+	public void setHealth(int i) {
+		this.health = i;
+	}
+	
+	public void setPower(int i) {
+		this.power = i;
+	}
+	
+	public void setSpeed(int i) {
+		this.speed = i;
+	}
+	
+	public void setDamage(int i) {
+		this.damage = i;
 	}
 	
 }
