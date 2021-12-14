@@ -142,12 +142,14 @@ public class GameScreen extends JComponent implements KeyListener {
 				int power = Integer.parseInt(words[1]);
 				int speed = Integer.parseInt(words[2]);
 				int damage = Integer.parseInt(words[3]);
+				int level = Integer.parseInt(words[4]);
 				
 				Player p = getSelfPlayer();
 				p.setHealth(health);
 				p.setPower(power);
 				p.setSpeed(speed);
 				p.setDamage(damage);
+				p.setLevel(level);
 		 });
 		updateMap.start();
 	}
@@ -211,16 +213,12 @@ public class GameScreen extends JComponent implements KeyListener {
 		for (String line : response[2].split("-")) {
 			String[] w = line.split(" ");
 			String[] l = w[1].split("/");
-			GameScreenVariables.objectColor = new Red();
-			if(tempCounterForPlayer==0) {
-				GameScreenVariables.objectColor = new Yellow();
-				GameScreenVariables.objectColor.paintProcess(l, w);
-				tempCounterForPlayer++;
-			}
+			if (w[3].equals("1"))
+				GameScreenVariables.objectColor = new Red();
 			else
-			{
-				GameScreenVariables.objectColor.paintProcess(l, w);
-			}	
+				GameScreenVariables.objectColor = new Yellow();
+
+			GameScreenVariables.objectColor.paintProcess(l, w);
 		}
 
 		GameScreenVariables.powerUps = parsePowerUps(response[3]);

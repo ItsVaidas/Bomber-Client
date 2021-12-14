@@ -159,5 +159,9 @@ public class Player implements Cloneable{
 	public void setDamage(int i) {
 		this.damage = i;
 	}
+
+	public void setLevel(int i) {
+		this.level = i;
+	}
 	
 }
